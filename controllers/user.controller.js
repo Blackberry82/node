@@ -1,4 +1,5 @@
 const fileService = require("../services/file.service");
+const statusCode = require('../constants/statusCode');
 
 module.exports = {
     getAllUsers: async (req, res) => {
@@ -8,21 +9,21 @@ module.exports = {
 
     createUser: async (req, res) => {
         const user = await fileService.insertUser(req.body);
-        res.status(201).json(user);
+        res.status(statusCode.CREATE).json(user);
     },
 
     getUserById: async (req, res) => {
         const {userId} = req.params;
 
         if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(400).json('Wrong user');
+            res.status(statusCode.BAD_REQUEST).json('Wrong user');
             return;
-        };
+        }
 
         const user = await fileService.getOneUser(+userId);
 
         if (!user) {
-            res.status(404).json('User not found');
+            res.status(statusCode.NO_FOUND).json('User not found');
             return;
         }
         res.json(user)
@@ -32,16 +33,16 @@ module.exports = {
         const {userId} = req.params;
 
         if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(400).json('Wrong user Id');
+            res.status(statusCode.BAD_REQUEST).json('Wrong user Id');
             return;
         }
 
             const user = await fileService.updateUser(+userId, req.body);
             if (!user) {
-                res.status(404).json('User not found');
+                res.status(statusCode.NO_FOUND).json('User not found');
                 return;
             }
-            res.status(201).json(user);
+            res.status(statusCode.CREATE).json(user);
 
     },
 
@@ -49,15 +50,15 @@ module.exports = {
         const {userId} = req.params;
 
         if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(400).json('Wrong user Id');
+            res.status(statusCode.BAD_REQUEST).json('Wrong user Id');
             return;
         }
 
             const user = await fileService.deleteOneUser(+userId);
             if (!user) {
-                res.status(404).json('User not found');
+                res.status(statusCode.BAD_REQUEST).json('User not found');
                 return;
             }
-            res.sendStatus(204);
+            res.sendStatus(statusCode.N0_CONTENT);
         }
 }
