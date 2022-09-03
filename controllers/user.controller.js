@@ -1,64 +1,58 @@
-const fileService = require("../services/file.service");
 const statusCode = require('../constants/statusCode');
+const ApiError = require('../errors/ApiError');
+const userService = require('../services/user.service');
 
 module.exports = {
-    getAllUsers: async (req, res) => {
-        const usersFromService = await fileService.getUsers();
-        res.json(usersFromService);
+    getAllUsers: async (req, res, next) => {
+        try {
+            const users = await userService.getAllUsers();
+            res.json(users);
+        }catch (e) {
+            next(e);
+        }
     },
 
-    createUser: async (req, res) => {
-        const user = await fileService.insertUser(req.body);
-        res.status(statusCode.CREATE).json(user);
-    },
-
-    getUserById: async (req, res) => {
-        const {userId} = req.params;
-
-        if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(statusCode.BAD_REQUEST).json('Wrong user');
-            return;
-        }
-
-        const user = await fileService.getOneUser(+userId);
-
-        if (!user) {
-            res.status(statusCode.NO_FOUND).json('User not found');
-            return;
-        }
-        res.json(user)
-    },
-
-    updateUserById: async (req, res) => {
-        const {userId} = req.params;
-
-        if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(statusCode.BAD_REQUEST).json('Wrong user Id');
-            return;
-        }
-
-            const user = await fileService.updateUser(+userId, req.body);
-            if (!user) {
-                res.status(statusCode.NO_FOUND).json('User not found');
-                return;
-            }
+    createUser: async (req, res, next) => {
+        try {
+            const user = await userService.createUser(req.body);
             res.status(statusCode.CREATE).json(user);
-
+        }catch (e) {
+            next(e);
+        }
     },
 
-    deleteUserById: async (req, res) => {
-        const {userId} = req.params;
-
-        if (Number.isNaN(+userId) || +userId < 0) {
-            res.status(statusCode.BAD_REQUEST).json('Wrong user Id');
-            return;
+    getUserById: async (req, res, next) => {
+        try {
+            const {user} = req;
+            res.json(user);
+        }catch (e){
+            next(e);
         }
+    },
 
-            const user = await fileService.deleteOneUser(+userId);
-            if (!user) {
-                res.status(statusCode.BAD_REQUEST).json('User not found');
-                return;
-            }
+    updateUserById: async (req, res, next) => {
+        try {
+            const {userId} = req.params;
+
+            const user = await userService.updateUserById(userId, req.body);
+
+            res.json(user);
+
+        }catch (e){
+            next(e);
+        }
+    },
+
+    deleteUserById: async (req, res, next) => {
+        try {
+            const {userId} = req.params;
+
+            await userService.deleteUserById(userId);
+
             res.sendStatus(statusCode.N0_CONTENT);
+
+        }catch (e){
+            next(e);
+        }
         }
 }
