@@ -1,7 +1,8 @@
 const {Router} = require('express');
 
 const {carController} = require('../controllers');
-const {commonMdwr, carMdwr, userMdwr} = require('../middlewares');
+const {commonMdwr, carMdwr, userMdwr, authMdwr} = require('../middlewares');
+const {authService} = require("../services");
 
 const carRouter = Router();
 
@@ -9,6 +10,7 @@ carRouter.post(
     '/',
     commonMdwr.checkIsIdValid('userId', 'query'),
     carMdwr.controlCarBodyIsValid,
+    authMdwr.checkIsAccessToken,
     userMdwr.isUserPresent('query'),
     carController.createCar
 );
@@ -23,6 +25,7 @@ carRouter.get(
 carRouter.put(
     '/:carId',
     commonMdwr.checkIsIdValid('carId'),
+    authMdwr.checkIsAccessToken,
     carMdwr.isCarPresent,
     carController.updateCarById
 );
@@ -30,6 +33,7 @@ carRouter.put(
 carRouter.delete(
     '/:carId',
     commonMdwr.checkIsIdValid('carId'),
+    authMdwr.checkIsAccessToken,
     carMdwr.isCarPresent,
     carController.deleteCarById
 );

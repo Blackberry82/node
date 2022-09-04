@@ -1,3 +1,5 @@
 module.exports = {
-    statusCode: require('./statusCode')
+    constant: require('./constant'),
+    statusCode: require('./statusCode'),
+    tokenTypeEnum: require('./tokenType.enum'),
 };

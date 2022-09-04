@@ -1,7 +1,7 @@
 const {Router} = require('express');
 
 const userController = require('../controllers/user.controller');
-const {commonMdwr, userMdwr} = require('../middlewares');
+const {commonMdwr, userMdwr, authMdwr} = require('../middlewares');
 
 const userRouter = Router();
 
@@ -27,6 +27,7 @@ userRouter.get(
 userRouter.put(
     '/:userId',
     commonMdwr.checkIsIdValid('userId'),
+    authMdwr.checkIsAccessToken,
     userMdwr.isUserPresent(),
     userMdwr.checkIsUserEmailUniq,
     userController.updateUserById
@@ -35,6 +36,7 @@ userRouter.put(
 userRouter.delete(
     '/:userId',
     commonMdwr.checkIsIdValid('userId'),
+    authMdwr.checkIsAccessToken,
     userMdwr.isUserPresent(),
     userController.deleteUserById
 );

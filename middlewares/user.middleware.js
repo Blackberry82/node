@@ -1,6 +1,7 @@
 const statusCode = require('../constants/statusCode');
 const ApiError = require('../errors/ApiError');
 const {userService} = require("../services");
+const User = require('../dataBase/User');
 
 module.exports = {
     controlUserBodyIsValid: async (req, res, next) => {
@@ -48,7 +49,25 @@ module.exports = {
         }catch (e){
 
         }
+    },
+
+    getUserDinamicaly: (from = 'body', filedName = 'userId', dbField = filedName) => {
+        return async function (req, res, next) {
+            try {
+                const filedToSearch = req[from][filedName];
+                const user = await User.findOne({[dbField]: filedToSearch});
+
+                if (!user) {
+                    return next(new ApiError('User not exist', statusCode.NOT_FOUND));
+                }
+                req.user = user;
+                next();
+            } catch (e) {
+
+            }
+        }
     }
+
 
 
 };
