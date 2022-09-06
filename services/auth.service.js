@@ -1,19 +1,19 @@
 const {Auth} = require('../dataBase');
 
 module.exports = {
-    saveTokens(tokens){
-        return Auth.create(tokens)
-    },
+  saveTokens(tokens){
+    return Auth.create(tokens);
+  },
 
-    getOneWithUser(filter){
-        return Auth.findOne(filter).populate('user');
-    },
+  getOneWithUser(filter){
+    return Auth.findOne(filter).populate('user');
+  },
 
-    getOneByParams(filter){
-        return Auth.findOne(filter);
-    },
+  getOneByParams(filter){
+    return Auth.findOne(filter);
+  },
 
-    deleteOneByParams(filter){
-        return Auth.deleteOne(filter);
-    },
-}
+  deleteOneByParams(filter){
+    return Auth.deleteOne(filter);
+  },
+};

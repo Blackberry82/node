@@ -1,5 +1,5 @@
 module.exports = {
-    errorHandler: require('./errorHandler'),
-    ApiError: require('./ApiError')
+  errorHandler: require('./errorHandler'),
+  ApiError: require('./ApiError')
 };
 

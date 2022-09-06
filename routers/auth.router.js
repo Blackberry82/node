@@ -1,20 +1,26 @@
 const {Router} = require('express');
 
 const {authController} = require('../controllers');
-const {userMdwr, authMdwr} = require('../middlewares');
+const {userMdwr, authMdwr, commonMdwr} = require('../middlewares');
+const {loginUserValidator} = require('../validator/user.validators');
 
 const authRouter = Router();
 
 authRouter.post(
-    '/login',
-    userMdwr.getUserDinamicaly('body', 'email', 'email'),
-    authController.login
+  '/login',
+  commonMdwr.checkIsBodyValid(loginUserValidator),
+  userMdwr.getUserDinamicaly('body', 'email', 'email'),
+  authController.login
 );
-
 authRouter.post(
-    '/refresh',
-    authMdwr.checkIsRefreshToken,
-    authController.refresh,
+  '/logout',
+  authMdwr.checkIsAccessToken,
+  authController.logout
+);
+authRouter.post(
+  '/refresh',
+  authMdwr.checkIsRefreshToken,
+  authController.refresh,
 );
 
 module.exports = authRouter;

@@ -2,43 +2,45 @@ const {Router} = require('express');
 
 const userController = require('../controllers/user.controller');
 const {commonMdwr, userMdwr, authMdwr} = require('../middlewares');
+const {newUserValidator, updateUserValidator} = require('../validator/user.validators');
 
 const userRouter = Router();
 
 userRouter.get(
-    '/',
-    userController.getAllUsers
+  '/',
+  userController.getAllUsers
 );
 
 userRouter.post(
-    '/',
-    userMdwr.controlUserBodyIsValid,
-    userMdwr.checkIsUserEmailUniq,
-    userController.createUser
+  '/',
+  commonMdwr.checkIsBodyValid(newUserValidator),
+  userMdwr.checkIsUserEmailUniq,
+  userController.createUser
 );
 
 userRouter.get(
-    '/:userId',
-    commonMdwr.checkIsIdValid('userId'),
-    userMdwr.isUserPresent(),
-    userController.getUserById
+  '/:userId',
+  commonMdwr.checkIsIdValid('userId'),
+  userMdwr.isUserPresent(),
+  userController.getUserById
 );
 
 userRouter.put(
-    '/:userId',
-    commonMdwr.checkIsIdValid('userId'),
-    authMdwr.checkIsAccessToken,
-    userMdwr.isUserPresent(),
-    userMdwr.checkIsUserEmailUniq,
-    userController.updateUserById
+  '/:userId',
+  commonMdwr.checkIsIdValid('userId'),
+  commonMdwr.checkIsBodyValid(updateUserValidator),
+  authMdwr.checkIsAccessToken,
+  userMdwr.isUserPresent(),
+  userMdwr.checkIsUserEmailUniq,
+  userController.updateUserById
 );
 
 userRouter.delete(
-    '/:userId',
-    commonMdwr.checkIsIdValid('userId'),
-    authMdwr.checkIsAccessToken,
-    userMdwr.isUserPresent(),
-    userController.deleteUserById
+  '/:userId',
+  commonMdwr.checkIsIdValid('userId'),
+  authMdwr.checkIsAccessToken,
+  userMdwr.isUserPresent(),
+  userController.deleteUserById
 );
 
 module.exports = userRouter;

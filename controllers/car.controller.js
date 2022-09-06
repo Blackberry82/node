@@ -1,53 +1,57 @@
 const statusCode = require('../constants/statusCode');
-const ApiError = require('../errors/ApiError');
 const {carService, userService} = require('../services');
 
 module.exports = {
 
-    createCar: async (req, res, next) => {
-        try {
-            const {_id, cars} = req.user;
-            const car = await carService.createCar({...req.body, user: _id});
-            await userService.updateUserById(_id, {cars: [...cars, car._id]});
+  createCar: async (req, res, next) => {
+    try {
+      const {_id} = req.tokenInfo.user;
+      const car = await carService.createCar({...req.body, user: _id});
+      const userCars = await carService.getCarsByParams({user: _id});
 
-            res.status(statusCode.CREATE).json(car);
-        }catch (e) {
-            next(e);
-        }
-    },
+      await userService.updateUserById(_id, {cars: [
+        ...userCars,
+        car._id
+      ]});
 
-    getCarById: async (req, res, next) => {
-        try {
-            const {car} = req;
-            res.json(car)
-        }catch (e){
-            next(e);
-        }
-    },
+      res.status(statusCode.CREATE).json(car);
+    }catch (e) {
+      next(e);
+    }
+  },
 
-    updateCarById: async (req, res, next) => {
-        try {
-            const {carId} = req.params;
+  getCarById: (req, res, next) => {
+    try {
+      const {car} = req;
+      res.json(car);
+    }catch (e){
+      next(e);
+    }
+  },
 
-            const car = await carService.updateCarById(carId, req.body);
+  updateCarById: async (req, res, next) => {
+    try {
+      const {carId} = req.params;
 
-            res.json(car);
+      const car = await carService.updateCarById(carId, req.body);
 
-        }catch (e){
-            next(e);
-        }
-    },
+      res.json(car);
 
-    deleteCarById: async (req, res, next) => {
-        try {
-            const {carId} = req.params;
+    }catch (e){
+      next(e);
+    }
+  },
 
-            await carService.deleteCarById(carId);
+  deleteCarById: async (req, res, next) => {
+    try {
+      const {carId} = req.params;
 
-            res.sendStatus(statusCode.N0_CONTENT);
+      await carService.deleteCarById(carId);
 
-        }catch (e){
-            next(e);
-        }
-        }
-}
+      res.sendStatus(statusCode.N0_CONTENT);
+
+    }catch (e){
+      next(e);
+    }
+  }
+};
