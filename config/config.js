@@ -8,4 +8,9 @@ module.exports = {
   ACCESS_TOKEN_LIFETIME: process.env.ACCESS_TOKEN_LIFETIME || '5m',
   REFRESH_TOKEN_LIFETIME: process.env.REFRESH_TOKEN_LIFETIME || '30d',
 
+  NO_REPLAY_EMAIL: process.env.NO_REPLAY_EMAIL || 'test@gmail.com',
+  NO_REPLAY_PASSWORD: process.env.NO_REPLAY_PASSWORD || 'email password',
+
+  FRONTEND_URL: process.env.FRONTEND_URL || 'example.com'
+
 };
