@@ -1,5 +1,7 @@
 .idea
+
 node.iml
 node_modules
+
 package-lock.json
-.env
+environments/*.env
