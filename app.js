@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 require('dotenv').config();
 const mongoose = require('mongoose');
 
@@ -16,6 +17,8 @@ if (NODE_ENV !== 'production') {
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use(fileUpload({}));
 
 app.use('/auth', authRouter);
 app.use('/cars', carRouter);
