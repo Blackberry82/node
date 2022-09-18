@@ -1,6 +1,8 @@
+const http = require('http');
 const express = require('express');
+const socketIo = require('socket.io');
 const fileUpload = require('express-fileupload');
-require('dotenv').config();
+require('dotenv').config({path: `./environments/${process.env.NODE_ENV}.env`});
 const mongoose = require('mongoose');
 
 const {PORT, MONGO_URL, NODE_ENV} = require('./config/config');
@@ -9,6 +11,8 @@ const {userRouter, carRouter, authRouter} = require('./routers');
 const errorHandler = require('./errors/errorHandler');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {});
 
 if (NODE_ENV !== 'production') {
   const morgan = require('morgan');
@@ -30,7 +34,7 @@ app.use('*',(req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log('App listen', PORT);
   mongoose.connect(MONGO_URL);

@@ -1,10 +1,10 @@
 const S3 = require('aws-sdk/clients/s3');
 const uuid = require('uuid');
 
-const {S3_BUCKET_URL, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_BUCKET_NAME} = require('../config/config');
+const {S3_BUCKET_URL, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, S3_BUCKET_NAME, S3_BUCKET_REGION} = require('../config/config');
 
 const S3Bucket = new S3({
-  region: 'us-east-1',
+  region: S3_BUCKET_REGION,
   accessKeyId: S3_ACCESS_KEY_ID,
   secretAccessKey: S3_SECRET_ACCESS_KEY
 });
@@ -26,7 +26,7 @@ const deleteFile = (url) => {
   const path = url.split(S3_BUCKET_URL).pop();
 
   return S3Bucket. deleteObject({
-    Bucket: 'stepan-bucket',
+    Bucket: S3_BUCKET_NAME,
     Key: path
   }).promise();
 };
@@ -36,7 +36,7 @@ function generateFileName(fileName = '', itemType, itemId) {
   const extension = fileName.split('.').pop();
 
   return `${itemType}/${itemId}/${uuid.v1()}.${extension}`;
-};
+}
 
 
 module.exports = {

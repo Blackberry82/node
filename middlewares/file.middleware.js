@@ -4,7 +4,7 @@ const {statusCode, fileConstants} = require('../constants');
 module.exports = {
   checkUploadedAvatar: (req, res, next) => {
     try {
-        console.log(req.files);
+
       if (!req.files || !req.files.avatar) {
         return next(new ApiError('You have not avatar', statusCode.BAD_REQUEST));
       }
