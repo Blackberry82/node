@@ -12,12 +12,37 @@ const errorHandler = require('./errors/errorHandler');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {});
+const io = socketIo(server, {cors:'http://localhost:63342/'});
+
+io.on('connection', (socket) => {
+  console.log('========================');
+  console.log(socket.id);
+  console.log(socket.handshake.auth);
+  console.log('========================');
+
+  socket.on('message:create', (data) => {
+    console.log(data);
+    //EMIT EVENT TO SENDER
+    // socket.emit('user:create', {name:'STEPAN', hard:2});
+    //EMIT EVENT ALL USERS INCLUDE SENDER
+    io.emit('user:create', {name:'STEPAN', hard:2});
+    //EMIT EVENT ALL USERS EXCLUDE SENDER
+        // socket.broadcast.emit('user:create', {name: 'OOOOHHHH', hard: 10});
+  });
+  socket.on('user:join', (data) => {
+    const {roomId} = data;
+    socket.join(roomId);
+    //SEND TO ROOM MEMBERS EXCLUDE SENDER
+    // socket.to(roomId).emit('room:newMember', {userName:socket.id});
+    //SEND TO ROOM MEMBER INCLUDE SENDER
+    io.to(roomId).emit('room:newMember', {userName:socket.id});
+  });
+});
 
 if (NODE_ENV !== 'production') {
   const morgan = require('morgan');
   app.use(morgan('dev'));
-};
+}
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

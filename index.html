@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<button id="sendMessage">SEND MESSAGE</button>
+<button id="joinRoom1">JOIN ROOM 1</button>
+<button id="joinRoom2">JOIN ROOM 2</button>
+
+<script>
+    const socket = io('http://localhost:5000', {
+        auth: {token: localStorage.getItem('token')},
+        query: {name: 'Stepan'}
+    });
+
+let sendMsgBtn = document.getElementById('sendMessage');
+let joinRoom1 = document.getElementById('joinRoom1');
+let joinRoom2 = document.getElementById('joinRoom2');
+
+sendMsgBtn.onclick = () => {
+    socket.emit('message:create', {body: 'TEST'})
+};
+socket.on('user:create', (data) => {
+    document.write(JSON.stringify(data, null, 10))
+});
+joinRoom1.onclick = () => {
+    socket.emit('user:join', {roomId: 'room1'});
+};
+joinRoom2.onclick = () => {
+    socket.emit('user:join', {roomId: 'room2'});
+};
+socket.on('room:newMember', (memberInfo) => {
+    alert(`User ${memberInfo.userName} join to chat`)
+    });
+
+</script>
+
+</body>
+</html>
