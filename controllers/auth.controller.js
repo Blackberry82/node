@@ -7,14 +7,14 @@ const {
   emailService,
   actionTokenService,
   userService,
-  previousPassService
+  previousPassService, smsService
 } = require('../services');
 
 module.exports = {
   login: async (req, res, next) => {
     try {
       const {password, email} = req.body;
-      const {_id} = req.user;
+      const {_id, phone} = req.user;
 
       await req.user.checkIsPasswordSame(password);
 
@@ -23,7 +23,9 @@ module.exports = {
       await authService.saveTokens({...authTokens, user: _id});
 
       // await sendEmail(email, emailActionEnum.WELCOME, {userName: name});
-      await sendEmail(email, emailActionEnum.FORGOT_PASSWORD);
+      await emailService.sendEmail(email, emailActionEnum.FORGOT_PASSWORD);
+
+      await smsService.sendSMS(phone, 'Welcome');
 
       res.json({
         ...authTokens,
